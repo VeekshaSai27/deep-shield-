@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Photo Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .download-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Protected Photo Preview</h1>
+
+    <!-- Display the photo -->
+    <img src="http://localhost:5000/static/protected_photo.jpg" alt="Confidential Photo" width="500">
+
+    <!-- Download Button -->
+    <br>
+    <a href="http://localhost:5000/static/protected_photo.jpg" download="protected_photo.jpg">
+        <button class="download-btn">Download Photo</button>
+    </a>
+
+    <!-- Tracking pixel (Invisible) -->
+    <img src="http://localhost:5000/tracker/photo12345.png"
+         width="1"
+         height="1"
+         style="display: none;"
+         alt="invisible pixel">
+
+</body>
+</html>

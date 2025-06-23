@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Phone Detection Alert</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      overflow: hidden;
+      text-align: center;
+      background: black;
+      color: white;
+    }
+
+    #videoElement {
+      width: 100vw;
+      height: auto;
+      transform: scaleX(-1); /* mirror selfie view */
+    }
+
+    #alertBox {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: red;
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <video id="videoElement" autoplay muted playsinline></video>
+  <div id="alertBox">📸 Phone Detected! Don't take photos!</div>
+
+  <script>
+    const video = document.getElementById('videoElement');
+    const alertBox = document.getElementById('alertBox');
+
+    async function setupCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" }, // front camera
+        audio: false
+      });
+      video.srcObject = stream;
+      return new Promise(resolve => {
+        video.onloadedmetadata = () => resolve(video);
+      });
+    }
+
+    async function runDetection() {
+      const model = await cocoSsd.load();
+      console.log("Model loaded!");
+
+      setInterval(async () => {
+        const predictions = await model.detect(video);
+        const hasPhone = predictions.some(p => p.class === "cell phone" && p.score > 0.5);
+
+        if (hasPhone) {
+          alertBox.style.display = 'block';
+        } else {
+          alertBox.style.display = 'none';
+        }
+      }, 1000); // run detection every second
+    }
+
+    async function init() {
+      await setupCamera();
+      await runDetection();
+    }
+
+    init();
+  </script>
+</body>
+</html>
